@@ -1,0 +1,58 @@
+.global g1, g2
+.extern e1, f1
+
+.section data
+g1:
+  .word g1
+  .word 0xFFFFFFFF
+g2:
+  .word e1, g2, l1
+  .skip 8
+l1:
+  .word 0x12345678
+.section text1
+  int
+  iret
+  ret
+  call 0xFAFAFAFA
+  call f1
+  jmp 0xABC
+  jmp l1
+  beq %r1, %r2, 0x12121212
+  beq %r1, %r2, f1
+  bne %r10, %r12, 0x123
+  bne %r10, %r12, f2
+  bgt %sp, %r1, 0x69696969
+  bgt %sp, %r1, f3
+  push %r10
+  pop %r11
+.section text2
+f2:
+  xchg %r1, %r2
+  add %r1, %r2
+  sub %r1, %r2
+  mul %r1, %r2
+  div %r1, %r2
+  not %r1
+  and %r1, %r2
+  or %r1, %r2
+  xor %r1, %r2
+  shl %r1, %r2
+  shr %r1, %r2
+f3:
+  ld $0xFEFEFEFE, %r1
+  ld $e1, %r1
+  ld 0xFEFEFEFE, %r1
+f4:
+  ld e1, %r1
+  ld %r2, %r1
+  ld [%r2], %r1
+  ld [%r3 + 0xFF], %r1
+  st %r4, 0xEFEFEFEF
+  st %r5, g2
+  st %r6, [%r7]
+  st %r8, [%r9 + 1000]
+f5:
+  halt
+
+.end
